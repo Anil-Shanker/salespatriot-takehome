@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Input } from '@/catalyst/input'
 import { SolicitationFilters } from '@/lib/types'
+import { fscLabel } from '@/lib/fscGroups'
 
 const selectClassName =
   'w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -68,7 +69,7 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
       >
         <option value="">All FSCs</option>
         {fscs.map((fsc) => (
-          <option key={fsc} value={fsc}>{fsc}</option>
+          <option key={fsc} value={fsc}>{fscLabel(fsc)}</option>
         ))}
       </select>
 
