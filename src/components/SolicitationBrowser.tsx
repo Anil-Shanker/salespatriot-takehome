@@ -1,21 +1,27 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Solicitation } from '@/lib/types'
+import { Solicitation, SolicitationFilters } from '@/lib/types'
 import { SolicitationCard } from '@/components/SolicitationCard'
 import { SolicitationModal } from '@/components/SolicitationModal'
 import { FilterPanel } from '@/components/FilterPanel'
 import { Button } from '@/catalyst/button'
 
+const PAGE_SIZE = 20
+
 type SolicitationBrowserProps = {
   solicitations: Solicitation[]
   isAdmin: boolean
+  filters: SolicitationFilters
+  fscs: string[]
 }
 
 export function SolicitationBrowser({
   solicitations,
   isAdmin,
+  filters,
+  fscs,
 }: SolicitationBrowserProps): React.JSX.Element {
   const router = useRouter()
   const [selected, setSelected] = useState<Solicitation | null>(null)
@@ -23,6 +29,26 @@ export function SolicitationBrowser({
   const [scraping, setScraping] = useState(false)
   const [scrapeResult, setScrapeResult] = useState<{ count: number } | null>(null)
   const [scrapeError, setScrapeError] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [solicitations])
+
+  const totalPages = Math.max(1, Math.ceil(solicitations.length / PAGE_SIZE))
+  const paged = solicitations.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+
+  function handleFilterChange(next: SolicitationFilters): void {
+    const params = new URLSearchParams()
+    if (next.q !== undefined && next.q !== '') params.set('q', next.q)
+    if (next.fsc !== undefined && next.fsc !== '') params.set('fsc', next.fsc)
+    if (next.set_aside !== undefined && next.set_aside !== '') params.set('set_aside', next.set_aside)
+    if (next.closing_within !== undefined) params.set('closing_within', next.closing_within)
+    if (next.sort !== undefined) params.set('sort', next.sort)
+    if (next.order !== undefined) params.set('order', next.order)
+    const qs = params.toString()
+    router.replace(qs === '' ? '/' : '/?' + qs)
+  }
 
   async function handleScrape(): Promise<void> {
     setScraping(true)
@@ -86,7 +112,7 @@ export function SolicitationBrowser({
 
       <div className="flex">
         <aside className="hidden md:block w-72 shrink-0 border-r border-zinc-200 bg-white min-h-screen p-5">
-          <FilterPanel />
+          <FilterPanel filters={filters} onChange={handleFilterChange} fscs={fscs} />
         </aside>
 
         {filtersOpen && (
@@ -98,15 +124,27 @@ export function SolicitationBrowser({
               className="absolute left-0 top-0 bottom-0 w-72 bg-white p-5 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <FilterPanel onClose={() => setFiltersOpen(false)} />
+              <FilterPanel
+                filters={filters}
+                onChange={handleFilterChange}
+                onClose={() => setFiltersOpen(false)}
+                fscs={fscs}
+              />
             </div>
           </div>
         )}
 
         <main className="flex-1 p-4 md:p-6">
-          <p className="text-sm text-zinc-500 mb-4">{solicitations.length} solicitations</p>
+          <p className="text-sm text-zinc-500 mb-4">
+            {solicitations.length} solicitations
+            {totalPages > 1 && (
+              <span className="ml-1 text-zinc-400">
+                — page {currentPage} of {totalPages}
+              </span>
+            )}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {solicitations.map((sol) => (
+            {paged.map((sol) => (
               <SolicitationCard key={sol.sol_number} solicitation={sol} onSelect={setSelected} />
             ))}
           </div>
@@ -116,6 +154,28 @@ export function SolicitationBrowser({
               {isAdmin && (
                 <p className="text-sm mt-1">Click "Scrape DIBBS" to load data.</p>
               )}
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 mt-6">
+              <button
+                onClick={() => setCurrentPage((p) => p - 1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 text-sm border border-zinc-300 rounded hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              >
+                ← Prev
+              </button>
+              <span className="text-sm text-zinc-500">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => p + 1)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 text-sm border border-zinc-300 rounded hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              >
+                Next →
+              </button>
             </div>
           )}
         </main>

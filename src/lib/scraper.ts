@@ -51,7 +51,7 @@ function parseIndexLine(line: string, postedDate: string): Solicitation | null {
   const codes = rest.slice(30).trim()
 
   const fsc = nsn.slice(0, 4)
-  const url = `https://www.dibbs.bsm.dla.mil/rfq/rfqdetail.aspx?sn=${solNumber}`
+  const url = `https://www.dibbs.bsm.dla.mil/RFQ/RFQNsn.aspx?value=${nsn}&category=issue&Scope=`
 
   return {
     sol_number: solNumber,

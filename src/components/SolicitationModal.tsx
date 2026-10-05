@@ -91,6 +91,7 @@ export function SolicitationModal({
                     rel="noopener noreferrer"
                     className="text-zinc-400 hover:text-zinc-600"
                     aria-label="Open on DIBBS"
+                    title="Opens on DIBBS — accept the DoD banner if prompted"
                   >
                     <ArrowTopRightOnSquareIcon className="size-4" />
                   </a>
@@ -151,6 +152,7 @@ export function SolicitationModal({
                   href={solicitation.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title="Opens on DIBBS — accept the DoD banner if prompted"
                 >
                   View on DIBBS →
                 </Button>

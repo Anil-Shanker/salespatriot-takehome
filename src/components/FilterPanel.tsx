@@ -1,15 +1,44 @@
-import React from 'react'
+'use client'
+
+import React, { useState, useEffect, useRef } from 'react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Input } from '@/catalyst/input'
+import { SolicitationFilters } from '@/lib/types'
 
 const selectClassName =
   'w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
 
 type FilterPanelProps = {
+  filters: SolicitationFilters
+  onChange: (next: SolicitationFilters) => void
+  fscs: string[]
   onClose?: () => void
 }
 
-export function FilterPanel({ onClose }: FilterPanelProps): React.JSX.Element {
+export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelProps): React.JSX.Element {
+  const [localQ, setLocalQ] = useState(filters.q ?? '')
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+  const filtersRef = useRef(filters)
+  filtersRef.current = filters
+
+  // Sync search input when filters.q is reset externally (e.g. clearing all filters)
+  useEffect(() => {
+    setLocalQ(filters.q ?? '')
+  }, [filters.q])
+
+  // Debounce: only push q to URL after 350ms of no typing
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const f = filtersRef.current
+      const qVal = localQ === '' ? undefined : localQ
+      if (qVal !== f.q) {
+        onChangeRef.current({ ...f, q: qVal })
+      }
+    }, 350)
+    return (): void => clearTimeout(timer)
+  }, [localQ])
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -28,18 +57,26 @@ export function FilterPanel({ onClose }: FilterPanelProps): React.JSX.Element {
       <Input
         type="text"
         placeholder="Search sol #, NSN, description…"
+        value={localQ}
+        onChange={(e) => setLocalQ(e.target.value)}
       />
 
-      <select className={selectClassName}>
+      <select
+        className={selectClassName}
+        value={filters.fsc ?? ''}
+        onChange={(e) => onChange({ ...filters, fsc: e.target.value })}
+      >
         <option value="">All FSCs</option>
-        <option value="5310">5310 — Nuts &amp; Bolts</option>
-        <option value="2530">2530 — Vehicular Brake Components</option>
-        <option value="6625">6625 — Electrical &amp; Electronic Measuring Instruments</option>
-        <option value="4710">4710 — Pipe, Tube &amp; Fittings</option>
-        <option value="1560">1560 — Airframe Structural Components</option>
+        {fscs.map((fsc) => (
+          <option key={fsc} value={fsc}>{fsc}</option>
+        ))}
       </select>
 
-      <select className={selectClassName}>
+      <select
+        className={selectClassName}
+        value={filters.set_aside ?? ''}
+        onChange={(e) => onChange({ ...filters, set_aside: e.target.value })}
+      >
         <option value="">All Set-asides</option>
         <option value="SB">SB</option>
         <option value="WOSB">WOSB</option>
@@ -48,22 +85,41 @@ export function FilterPanel({ onClose }: FilterPanelProps): React.JSX.Element {
         <option value="UNRESTRICTED">Unrestricted</option>
       </select>
 
-      <select className={selectClassName}>
-        <option value="">Any</option>
-        <option value="today">Today</option>
-        <option value="3days">3 days</option>
-        <option value="7days">7 days</option>
-        <option value="14days">14 days</option>
+      <select
+        className={selectClassName}
+        value={filters.closing_within ?? ''}
+        onChange={(e) => {
+          const v = e.target.value
+          onChange({
+            ...filters,
+            closing_within: v === '' ? undefined : (v as SolicitationFilters['closing_within']),
+          })
+        }}
+      >
+        <option value="">Any closing date</option>
+        <option value="1">Today</option>
+        <option value="3">3 days</option>
+        <option value="7">7 days</option>
+        <option value="14">14 days</option>
       </select>
 
-      <select className={selectClassName}>
+      <select
+        className={selectClassName}
+        value={filters.sort ?? 'closing'}
+        onChange={(e) =>
+          onChange({ ...filters, sort: e.target.value as SolicitationFilters['sort'] })
+        }
+      >
         <option value="closing">Closing Date</option>
         <option value="posted">Posted Date</option>
         <option value="sol">Sol #</option>
       </select>
 
-      <button className="border rounded px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50 transition self-start">
-        ↑ Asc
+      <button
+        className="border rounded px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50 transition self-start"
+        onClick={() => onChange({ ...filters, order: filters.order === 'desc' ? 'asc' : 'desc' })}
+      >
+        {filters.order === 'desc' ? '↓ Desc' : '↑ Asc'}
       </button>
     </div>
   )

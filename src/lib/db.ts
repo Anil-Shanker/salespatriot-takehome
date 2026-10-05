@@ -49,6 +49,11 @@ export function upsertSolicitations(db: Database.Database, rows: Solicitation[])
   insertMany(rows)
 }
 
+export function getDistinctFscs(db: Database.Database): string[] {
+  const rows = db.prepare('SELECT DISTINCT fsc FROM solicitations ORDER BY fsc ASC').all() as Array<{ fsc: string }>
+  return rows.map((r) => r.fsc)
+}
+
 export function querySolicitations(
   db: Database.Database,
   filters: SolicitationFilters
