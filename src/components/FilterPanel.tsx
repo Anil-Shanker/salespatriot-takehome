@@ -1,13 +1,37 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { InformationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Input } from '@/catalyst/input'
 import { SolicitationFilters } from '@/lib/types'
 import { fscLabel } from '@/lib/fscGroups'
 
 const selectClassName =
   'w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
+
+type TooltipProps = {
+  children: React.ReactNode
+}
+
+function Tooltip({ children }: TooltipProps): React.JSX.Element {
+  return (
+    <span className="relative group/tip inline-flex items-center">
+      <InformationCircleIcon className="size-3.5 text-zinc-400 cursor-help" />
+      <span className="pointer-events-none absolute left-4 top-0 z-20 hidden group-hover/tip:block w-60 rounded-lg bg-zinc-900 text-white text-xs leading-relaxed p-2.5 shadow-lg">
+        {children}
+      </span>
+    </span>
+  )
+}
+
+function FieldLabel({ label, tooltip }: { label: string; tooltip?: React.ReactNode }): React.JSX.Element {
+  return (
+    <span className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
+      {label}
+      {tooltip !== undefined && <Tooltip>{tooltip}</Tooltip>}
+    </span>
+  )
+}
 
 type FilterPanelProps = {
   filters: SolicitationFilters
@@ -23,12 +47,10 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
   const filtersRef = useRef(filters)
   filtersRef.current = filters
 
-  // Sync search input when filters.q is reset externally (e.g. clearing all filters)
   useEffect(() => {
     setLocalQ(filters.q ?? '')
   }, [filters.q])
 
-  // Debounce: only push q to URL after 350ms of no typing
   useEffect(() => {
     const timer = setTimeout(() => {
       const f = filtersRef.current
@@ -56,7 +78,7 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
       </div>
 
       <label className="flex flex-col gap-1">
-        <span className="text-xs font-medium text-zinc-500">Search</span>
+        <FieldLabel label="Search" />
         <Input
           type="text"
           placeholder="Sol #, NSN, description…"
@@ -66,7 +88,10 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="text-xs font-medium text-zinc-500">FSC</span>
+        <FieldLabel
+          label="FSC"
+          tooltip="Federal Supply Class — the first 4 digits of the NSN. Groups parts by category (e.g. 6515 = Medical Instruments)."
+        />
         <select
           className={selectClassName}
           value={filters.fsc ?? ''}
@@ -80,7 +105,19 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="text-xs font-medium text-zinc-500">Set-aside</span>
+        <FieldLabel
+          label="Set-aside"
+          tooltip={
+            <span className="flex flex-col gap-1">
+              <span>Restricts bidding to a specific business type:</span>
+              <span><strong className="text-zinc-300">SB</strong> — Small Business</span>
+              <span><strong className="text-zinc-300">WOSB</strong> — Women-Owned Small Business</span>
+              <span><strong className="text-zinc-300">8(a)</strong> — SBA 8(a) Development Program</span>
+              <span><strong className="text-zinc-300">HUBZone</strong> — Historically Underutilized Business Zone</span>
+              <span><strong className="text-zinc-300">Unrestricted</strong> — Open to all vendors</span>
+            </span>
+          }
+        />
         <select
           className={selectClassName}
           value={filters.set_aside ?? ''}
@@ -96,7 +133,10 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
       </label>
 
       <label className="flex flex-col gap-1">
-        <span className="text-xs font-medium text-zinc-500">Closing within</span>
+        <FieldLabel
+          label="Closing within"
+          tooltip="Filters by bid response deadline. '7 days' shows only solicitations closing between today and 7 days from now."
+        />
         <select
           className={selectClassName}
           value={filters.closing_within ?? ''}
