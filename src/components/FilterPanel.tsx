@@ -1,13 +1,29 @@
 import React from 'react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Input } from '@/catalyst/input'
 
 const selectClassName =
   'w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500'
 
-export function FilterPanel(): React.JSX.Element {
+type FilterPanelProps = {
+  onClose?: () => void
+}
+
+export function FilterPanel({ onClose }: FilterPanelProps): React.JSX.Element {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wide">Filters</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wide">Filters</h2>
+        {onClose !== undefined && (
+          <button
+            onClick={onClose}
+            className="text-zinc-400 hover:text-zinc-600 p-1 rounded"
+            aria-label="Close filters"
+          >
+            <XMarkIcon className="size-5" />
+          </button>
+        )}
+      </div>
 
       <Input
         type="text"

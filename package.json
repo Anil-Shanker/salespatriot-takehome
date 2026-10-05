@@ -6,27 +6,35 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "scrape": "tsx --tsconfig tsconfig.json scripts/scrape.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@tanstack/react-table": "^9.2.6",
+    "better-sqlite3": "^13.0.3",
     "clsx": "^2.1.1",
     "next": "16.3.8",
+    "playwright": "^1.63.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "tailwindcss": "^4.3.3"
   },
-  "prettier": { "tabWidth": 2, "singleQuote": true },
+  "prettier": {
+    "tabWidth": 2,
+    "singleQuote": true
+  },
   "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }
