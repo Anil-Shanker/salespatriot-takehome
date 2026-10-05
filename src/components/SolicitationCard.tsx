@@ -57,45 +57,51 @@ export function SolicitationCard({
   return (
     <button
       onClick={() => onSelect(solicitation)}
-      className="bg-white rounded-xl border border-zinc-200 shadow-sm p-4 hover:shadow-md hover:border-zinc-300 transition cursor-pointer w-full text-left"
+      className="bg-white rounded-xl border border-zinc-200 shadow-sm p-4 hover:shadow-md hover:border-zinc-300 transition cursor-pointer w-full text-left flex flex-col gap-3"
     >
-      <div className="flex items-center justify-between mb-1">
-        <span className="font-mono font-medium text-zinc-900 text-sm">
-          {solicitation.sol_number}
+      {/* Description — primary headline */}
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-sm font-semibold text-zinc-900 leading-snug">
+          {solicitation.description}
         </span>
         {urgency === 'today' && (
-          <span className="inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium bg-red-500/15 text-red-700">
+          <span className="shrink-0 inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium bg-red-500/15 text-red-700">
             TODAY
           </span>
         )}
         {urgency === 'soon' && (
-          <span className="inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium bg-amber-400/20 text-amber-700">
+          <span className="shrink-0 inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium bg-amber-400/20 text-amber-700">
             SOON
           </span>
         )}
       </div>
 
-      <div className="mb-1">
-        <span className="font-mono text-sm text-zinc-500">{solicitation.nsn}</span>
+      {/* Identifiers */}
+      <div className="flex gap-5">
+        <div>
+          <p className="text-xs text-zinc-400 mb-0.5">Sol #</p>
+          <p className="font-mono text-xs text-zinc-700">{solicitation.sol_number}</p>
+        </div>
+        <div>
+          <p className="text-xs text-zinc-400 mb-0.5">NSN</p>
+          <p className="font-mono text-xs text-zinc-700">{solicitation.nsn}</p>
+        </div>
       </div>
 
-      <div className="mb-2">
-        <span className="text-sm font-medium text-zinc-800">{solicitation.description}</span>
-      </div>
-
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-zinc-700">
-          {solicitation.quantity} {solicitation.unit}
-        </span>
-        <Badge color={setAsideBadgeColor(solicitation.set_aside)}>
-          {solicitation.set_aside}
-        </Badge>
-      </div>
-
-      <div>
-        <span className="text-sm text-zinc-500">
-          Closes {formatDate(solicitation.response_date)}
-        </span>
+      {/* Footer — set-aside, qty, closing */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Badge color={setAsideBadgeColor(solicitation.set_aside)}>
+            {solicitation.set_aside}
+          </Badge>
+          <span className="text-xs text-zinc-500">{solicitation.quantity} {solicitation.unit}</span>
+        </div>
+        <div className="text-right">
+          <p className="text-xs text-zinc-400 mb-0.5">Closes</p>
+          <p className={`text-xs font-medium ${urgency === 'today' ? 'text-red-600' : urgency === 'soon' ? 'text-amber-600' : 'text-zinc-600'}`}>
+            {formatDate(solicitation.response_date)}
+          </p>
+        </div>
       </div>
     </button>
   )
