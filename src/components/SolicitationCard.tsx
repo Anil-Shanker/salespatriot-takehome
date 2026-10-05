@@ -2,8 +2,6 @@ import React from 'react'
 import { Badge } from '@/catalyst/badge'
 import { Solicitation, SetAside } from '@/lib/types'
 
-const TODAY = '2026-10-05'
-
 function formatDate(dateStr: string): string {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
     month: 'short',
@@ -14,7 +12,7 @@ function formatDate(dateStr: string): string {
 type UrgencyLevel = 'today' | 'soon' | 'none'
 
 function getUrgency(responseDate: string): UrgencyLevel {
-  const today = new Date(TODAY + 'T00:00:00')
+  const today = new Date(new Date().toLocaleDateString('en-CA') + 'T00:00:00')
   const closing = new Date(responseDate + 'T00:00:00')
   const diffMs = closing.getTime() - today.getTime()
   const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24))
@@ -77,8 +75,12 @@ export function SolicitationCard({
         )}
       </div>
 
-      <div className="mb-2">
+      <div className="mb-1">
         <span className="font-mono text-sm text-zinc-500">{solicitation.nsn}</span>
+      </div>
+
+      <div className="mb-2">
+        <span className="text-sm font-medium text-zinc-800">{solicitation.description}</span>
       </div>
 
       <div className="flex items-center justify-between mb-2">
