@@ -14,10 +14,31 @@ type TooltipProps = {
 }
 
 function Tooltip({ children }: TooltipProps): React.JSX.Element {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function handleOutside(e: MouseEvent): void {
+      if (ref.current !== null && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('click', handleOutside)
+    return (): void => document.removeEventListener('click', handleOutside)
+  }, [open])
+
   return (
-    <span className="relative group/tip inline-flex items-center">
-      <InformationCircleIcon className="size-3.5 text-zinc-400" />
-      <span className="pointer-events-none absolute left-4 top-0 z-20 hidden group-hover/tip:block w-60 rounded-lg bg-zinc-900 text-white text-xs leading-relaxed p-2.5 shadow-lg">
+    <span ref={ref} className="relative group/tip inline-flex items-center">
+      <InformationCircleIcon
+        className="size-3.5 text-zinc-400"
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          setOpen((o) => !o)
+        }}
+      />
+      <span className={`absolute left-4 top-0 z-20 w-60 rounded-lg bg-zinc-900 text-white text-xs leading-relaxed p-2.5 shadow-lg ${open ? 'block' : 'hidden group-hover/tip:block'}`}>
         {children}
       </span>
     </span>
