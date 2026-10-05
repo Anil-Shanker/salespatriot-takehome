@@ -7,8 +7,6 @@ import { Badge } from '@/catalyst/badge'
 import { Button } from '@/catalyst/button'
 import { Solicitation, SetAside } from '@/lib/types'
 
-const TODAY = '2026-10-05'
-
 function formatDate(dateStr: string): string {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
     month: 'short',
@@ -19,7 +17,7 @@ function formatDate(dateStr: string): string {
 type UrgencyLevel = 'today' | 'soon' | 'none'
 
 function getUrgency(responseDate: string): UrgencyLevel {
-  const today = new Date(TODAY + 'T00:00:00')
+  const today = new Date(new Date().toLocaleDateString('en-CA') + 'T00:00:00')
   const closing = new Date(responseDate + 'T00:00:00')
   const diffMs = closing.getTime() - today.getTime()
   const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24))
