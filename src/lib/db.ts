@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3'
+import fs from 'fs'
 import path from 'path'
 import { Solicitation, SolicitationFilters } from '@/lib/types'
 
@@ -10,6 +11,7 @@ export function getDb(): Database.Database {
   if (_db !== null) {
     return _db
   }
+  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true })
   _db = new Database(DB_PATH)
   initDb(_db)
   return _db

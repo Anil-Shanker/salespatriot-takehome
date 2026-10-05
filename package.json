@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "scrape": "tsx --tsconfig tsconfig.json scripts/scrape.ts"
+    "scrape": "tsx --tsconfig tsconfig.json scripts/scrape.ts",
+    "setup": "playwright install chromium"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
