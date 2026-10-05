@@ -55,54 +55,66 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
         )}
       </div>
 
-      <Input
-        type="text"
-        placeholder="Search sol #, NSN, description…"
-        value={localQ}
-        onChange={(e) => setLocalQ(e.target.value)}
-      />
+      <label className="flex flex-col gap-1">
+        <span className="text-xs font-medium text-zinc-500">Search</span>
+        <Input
+          type="text"
+          placeholder="Sol #, NSN, description…"
+          value={localQ}
+          onChange={(e) => setLocalQ(e.target.value)}
+        />
+      </label>
 
-      <select
-        className={selectClassName}
-        value={filters.fsc ?? ''}
-        onChange={(e) => onChange({ ...filters, fsc: e.target.value })}
-      >
-        <option value="">All FSCs</option>
-        {fscs.map((fsc) => (
-          <option key={fsc} value={fsc}>{fscLabel(fsc)}</option>
-        ))}
-      </select>
+      <label className="flex flex-col gap-1">
+        <span className="text-xs font-medium text-zinc-500">FSC</span>
+        <select
+          className={selectClassName}
+          value={filters.fsc ?? ''}
+          onChange={(e) => onChange({ ...filters, fsc: e.target.value })}
+        >
+          <option value="">All</option>
+          {fscs.map((fsc) => (
+            <option key={fsc} value={fsc}>{fscLabel(fsc)}</option>
+          ))}
+        </select>
+      </label>
 
-      <select
-        className={selectClassName}
-        value={filters.set_aside ?? ''}
-        onChange={(e) => onChange({ ...filters, set_aside: e.target.value })}
-      >
-        <option value="">All Set-asides</option>
-        <option value="SB">SB</option>
-        <option value="WOSB">WOSB</option>
-        <option value="8A">8(a)</option>
-        <option value="HUBZONE">HUBZone</option>
-        <option value="UNRESTRICTED">Unrestricted</option>
-      </select>
+      <label className="flex flex-col gap-1">
+        <span className="text-xs font-medium text-zinc-500">Set-aside</span>
+        <select
+          className={selectClassName}
+          value={filters.set_aside ?? ''}
+          onChange={(e) => onChange({ ...filters, set_aside: e.target.value })}
+        >
+          <option value="">All</option>
+          <option value="SB">SB</option>
+          <option value="WOSB">WOSB</option>
+          <option value="8A">8(a)</option>
+          <option value="HUBZONE">HUBZone</option>
+          <option value="UNRESTRICTED">Unrestricted</option>
+        </select>
+      </label>
 
-      <select
-        className={selectClassName}
-        value={filters.closing_within ?? ''}
-        onChange={(e) => {
-          const v = e.target.value
-          onChange({
-            ...filters,
-            closing_within: v === '' ? undefined : (v as SolicitationFilters['closing_within']),
-          })
-        }}
-      >
-        <option value="">Any closing date</option>
-        <option value="1">Today</option>
-        <option value="3">3 days</option>
-        <option value="7">7 days</option>
-        <option value="14">14 days</option>
-      </select>
+      <label className="flex flex-col gap-1">
+        <span className="text-xs font-medium text-zinc-500">Closing within</span>
+        <select
+          className={selectClassName}
+          value={filters.closing_within ?? ''}
+          onChange={(e) => {
+            const v = e.target.value
+            onChange({
+              ...filters,
+              closing_within: v === '' ? undefined : (v as SolicitationFilters['closing_within']),
+            })
+          }}
+        >
+          <option value="">Any date</option>
+          <option value="1">Today</option>
+          <option value="3">3 days</option>
+          <option value="7">7 days</option>
+          <option value="14">14 days</option>
+        </select>
+      </label>
 
     </div>
   )
