@@ -88,22 +88,8 @@ export function querySolicitations(
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
 
-  const orderCol = (() => {
-    switch (filters.sort) {
-      case 'posted':
-        return 'posted_date'
-      case 'sol':
-        return 'sol_number'
-      case 'closing':
-        return 'response_date'
-      default:
-        return 'response_date'
-    }
-  })()
-  const orderDir = filters.order === 'desc' ? 'DESC' : 'ASC'
-
   const rows = db
-    .prepare(`SELECT * FROM solicitations ${where} ORDER BY ${orderCol} ${orderDir}`)
+    .prepare(`SELECT * FROM solicitations ${where} ORDER BY response_date ASC`)
     .all(params) as Array<Solicitation & { scraped_at: string }>
 
   return rows.map(({ scraped_at: _scraped_at, ...sol }) => sol)

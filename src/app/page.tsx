@@ -20,8 +20,6 @@ export default async function Home({
     fsc: params.fsc,
     set_aside: params.set_aside,
     closing_within: params.closing_within as SolicitationFilters['closing_within'],
-    sort: params.sort as SolicitationFilters['sort'],
-    order: params.order as SolicitationFilters['order'],
   }
 
   const db = getDb()

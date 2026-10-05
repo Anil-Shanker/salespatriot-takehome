@@ -104,24 +104,6 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
         <option value="14">14 days</option>
       </select>
 
-      <select
-        className={selectClassName}
-        value={filters.sort ?? 'closing'}
-        onChange={(e) =>
-          onChange({ ...filters, sort: e.target.value as SolicitationFilters['sort'] })
-        }
-      >
-        <option value="closing">Closing Date</option>
-        <option value="posted">Posted Date</option>
-        <option value="sol">Sol #</option>
-      </select>
-
-      <button
-        className="border rounded px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50 transition self-start"
-        onClick={() => onChange({ ...filters, order: filters.order === 'desc' ? 'asc' : 'desc' })}
-      >
-        {filters.order === 'desc' ? '↓ Desc' : '↑ Asc'}
-      </button>
     </div>
   )
 }

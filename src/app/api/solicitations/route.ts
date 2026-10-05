@@ -10,8 +10,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     set_aside: searchParams.get('set_aside') ?? undefined,
     q: searchParams.get('q') ?? undefined,
     closing_within: (searchParams.get('closing_within') as SolicitationFilters['closing_within']) ?? undefined,
-    sort: (searchParams.get('sort') as SolicitationFilters['sort']) ?? undefined,
-    order: (searchParams.get('order') as SolicitationFilters['order']) ?? undefined,
   }
 
   const db = getDb()

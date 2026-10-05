@@ -44,8 +44,6 @@ export function SolicitationBrowser({
     if (next.fsc !== undefined && next.fsc !== '') params.set('fsc', next.fsc)
     if (next.set_aside !== undefined && next.set_aside !== '') params.set('set_aside', next.set_aside)
     if (next.closing_within !== undefined) params.set('closing_within', next.closing_within)
-    if (next.sort !== undefined) params.set('sort', next.sort)
-    if (next.order !== undefined) params.set('order', next.order)
     const qs = params.toString()
     router.replace(qs === '' ? '/' : '/?' + qs)
   }

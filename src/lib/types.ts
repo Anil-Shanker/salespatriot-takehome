@@ -18,6 +18,4 @@ export type SolicitationFilters = {
   set_aside?: string
   q?: string
   closing_within?: '1' | '3' | '7' | '14'
-  sort?: 'closing' | 'posted' | 'sol'
-  order?: 'asc' | 'desc'
 }
