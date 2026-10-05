@@ -87,15 +87,28 @@ export function FilterPanel({ filters, onChange, fscs, onClose }: FilterPanelPro
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wide">Filters</h2>
-        {onClose !== undefined && (
-          <button
-            onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-600 p-1 rounded"
-            aria-label="Close filters"
-          >
-            <XMarkIcon className="size-5" />
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {(localQ !== '' || filters.fsc !== undefined || filters.set_aside !== undefined || filters.closing_within !== undefined) && (
+            <button
+              onClick={() => {
+                setLocalQ('')
+                onChange({})
+              }}
+              className="text-xs text-blue-600 hover:text-blue-800 transition"
+            >
+              Reset
+            </button>
+          )}
+          {onClose !== undefined && (
+            <button
+              onClick={onClose}
+              className="text-zinc-400 hover:text-zinc-600 p-1 rounded"
+              aria-label="Close filters"
+            >
+              <XMarkIcon className="size-5" />
+            </button>
+          )}
+        </div>
       </div>
 
       <label className="flex flex-col gap-1">
